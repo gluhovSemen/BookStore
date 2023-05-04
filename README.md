@@ -22,6 +22,6 @@ BookShop uses a number of open source projects to work properly:
 - [Django] - awesome framework
 - [FastAPI] - another awesome framework
 - [PostgreSQL] - just chose it 
-- [docker] - hopfully at some point
+- [docker] - hopefully at some point
 
 
