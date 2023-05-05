@@ -36,10 +36,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'review',
-    'book',
+    'book.apps.BookConfig',
     'cart',
     'purchase',
-    'user'
+    'user',
+    'rest_framework',
+
 
 ]
 
@@ -83,7 +85,7 @@ DATABASES = {
         'NAME': 'book_store',
         'USER': 'postgres',
         'PASSWORD': 'rusglu03',
-        'HOST': '10.5.0.5',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
@@ -127,3 +129,18 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 2,
+
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+
+}
