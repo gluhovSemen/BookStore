@@ -6,4 +6,4 @@ psycopg2-binary==2.9.3
 setuptools==67.7.2
 sqlparse~=0.4.4
 tzdata~=2023.3
-
+djangorestframework~=3.14.0
