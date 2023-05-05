@@ -83,7 +83,7 @@ DATABASES = {
         'NAME': 'book_store',
         'USER': 'postgres',
         'PASSWORD': 'rusglu03',
-        'HOST': 'localhost',
+        'HOST': '10.5.0.5',
         'PORT': '5432',
     }
 }
