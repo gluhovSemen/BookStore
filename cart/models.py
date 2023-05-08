@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from user.models import Profile
 from book.models import Book
@@ -5,7 +6,7 @@ from book.models import Book
 
 class Cart(models.Model):
     """This model represents the shopping cart of a user"""
-    customer = models.OneToOneField(Profile, on_delete=models.CASCADE)
+    customer = models.OneToOneField(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 

@@ -37,5 +37,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('books/', include('book.urls')),
     path('users/', include('user.urls')),
+    path('', include('rest_framework.urls')),
+    path('carts/', include('cart.urls')),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]

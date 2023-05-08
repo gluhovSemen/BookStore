@@ -3,21 +3,21 @@ from book.models import Book, Author, Publisher
 from book.serializers import BookSerializer, AuthorSerializer, PublisherSerializer
 
 
-class BookList(generics.ListCreateAPIView):
+class BookList(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
 
-class BookDetail(generics.RetrieveUpdateDestroyAPIView):
+class BookDetail(generics.ListAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
 
 
-class AuthorList(generics.ListCreateAPIView):
+class AuthorList(generics.ListAPIView):
     queryset = Author.objects.all()
     serializer_class = AuthorSerializer
 
 
-class PublisherList(generics.ListCreateAPIView):
+class PublisherList(generics.ListAPIView):
     queryset = Publisher.objects.all()
     serializer_class = PublisherSerializer
