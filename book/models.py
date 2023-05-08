@@ -26,5 +26,5 @@ class Book(models.Model):
     publication_date = models.DateField()
     cover_image = models.ImageField(upload_to='book_covers/')
     language = models.CharField(max_length=255)
-    available_stock = models.IntegerField()
+    available_stock = models.PositiveIntegerField()
     rating = models.FloatField(default=0.0)
