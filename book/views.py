@@ -9,8 +9,11 @@ class BookList(generics.ListAPIView):
 
 
 class BookDetail(generics.ListAPIView):
-    queryset = Book.objects.all()
     serializer_class = BookSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs.get("pk")
+        return Book.objects.filter(pk=pk)
 
 
 class AuthorList(generics.ListAPIView):

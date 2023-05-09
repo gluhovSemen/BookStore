@@ -1,47 +1,56 @@
-from rest_framework import generics, status, permissions
-from rest_framework.response import Response
-from .models import Cart, CartItem
-from .serializers import CartSerializer, CartItemSerializer
-
-
-class IsOwner(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        return obj.cart.user == request.user
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, permissions
+from cart.models import Cart, CartItem
+from cart.serializers import CartSerializer, CartItemSerializer
 
 
 class CartList(generics.ListCreateAPIView):
+    """Shows all the carts, for admins only"""
     permission_classes = [permissions.IsAdminUser]
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
 
 
 class CartDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.IsAdminUser, IsOwner]
+    """Shows the cart of the certain User"""
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
 
     def get_object(self):
-        return self.queryset.get(pk=self.request.user.pk)
+        obj = super().get_object()
+        if obj.customer != self.request.user:
+            self.permission_denied(
+                self.request, message="You do not have permission to access this cart."
+            )
+        return obj
 
 
 class CartItemList(generics.ListCreateAPIView):
-    permission_classes = [permissions.IsAdminUser, IsOwner]
+    """Shows all the CartItems in a cart for a certain user"""
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = CartItemSerializer
 
     def get_queryset(self):
-        cart_id = self.kwargs['cart_id']
-        return CartItem.objects.filter(cart_id=cart_id)
+        cart = get_object_or_404(Cart, customer=self.request.user)
+        queryset = CartItem.objects.filter(cart=cart)
+        return queryset
 
-    def create(self, request, cart_id):
-        request.data['cart'] = cart_id
-        serializer = CartItemSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        cart = get_object_or_404(Cart, customer=self.request.user)
+        serializer.save(cart=cart)
 
 
 class CartItemDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [permissions.IsAdminUser, IsOwner]
-    queryset = CartItem.objects.all()
+    """Shows a specific cartitem of a certain user"""
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = CartItemSerializer
+    queryset = CartItem.objects.all()
+
+    def get_object(self):
+        obj = super().get_object()
+        if obj.cart.customer != self.request.user:
+            self.permission_denied(
+                self.request, message="You do not have permission to access this cart item."
+            )
+        return obj
