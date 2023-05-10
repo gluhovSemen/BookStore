@@ -6,7 +6,7 @@ from purchase.serializers import PurchaseSerializer
 class PurchaseList(generics.ListCreateAPIView):
     queryset = Purchase.objects.all()
     serializer_class = PurchaseSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = permissions.IsAuthenticated
 
     def perform_create(self, serializer):
         serializer.save(customer=self.request.user)
@@ -15,7 +15,7 @@ class PurchaseList(generics.ListCreateAPIView):
 class PurchaseDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Purchase.objects.all()
     serializer_class = PurchaseSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = permissions.IsAuthenticated
 
     def get_queryset(self):
         return Purchase.objects.filter(customer=self.request.user)
