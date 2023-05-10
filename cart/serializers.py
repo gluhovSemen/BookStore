@@ -1,8 +1,9 @@
 from rest_framework import serializers
 
+from book.serializers import BookSerializer
 from book.models import Book
 from cart.models import Cart, CartItem
-from book.serializers import BookSerializer
+
 
 
 class CartItemSerializer(serializers.ModelSerializer):

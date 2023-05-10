@@ -1,9 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404
 
 from book.models import Book
-from cart.models import Cart, CartItem
+# from cart.models import Cart, CartItem
 
 
 class Purchase(models.Model):
@@ -14,12 +13,12 @@ class Purchase(models.Model):
     price = models.DecimalField(max_digits=7, decimal_places=2)
     purchased_date = models.DateTimeField(auto_now_add=True)
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        # Remove the purchased items from the cart
-        cart = get_object_or_404(Cart, customer=self.customer)
-        cart_items = CartItem.objects.filter(cart=cart, book=self.book)
-        cart_items.delete()
-        # Reduce the available stock of the book
-        self.book.available_stock -= self.quantity
-        self.book.save()
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
+    #     # Remove the purchased items from the cart
+    #     cart = get_object_or_404(Cart, customer=self.customer)
+    #     cart_items = CartItem.objects.filter(cart=cart, book=self.book)
+    #     cart_items.delete()
+    #     # Reduce the available stock of the book
+    #     self.book.available_stock -= self.quantity
+    #     self.book.save()

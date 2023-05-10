@@ -6,7 +6,7 @@ from user.serializers import UserSerializer
 
 
 class UserRegistration(APIView):
-    permission_classes = permissions.AllowAny
+    permission_classes =[permissions.AllowAny]
 
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -17,7 +17,7 @@ class UserRegistration(APIView):
 
 
 class UserLogin(APIView):
-    permission_classes = permissions.AllowAny
+    permission_classes = [permissions.AllowAny]
 
     def post(self, request):
         username = request.data.get('username')

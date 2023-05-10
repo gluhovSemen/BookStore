@@ -20,7 +20,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 
 class ReviewList(generics.ListCreateAPIView):
-    permission_classes = permissions.IsAuthenticatedOrReadOnly
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = ReviewSerializer
 
     def get_queryset(self):
@@ -36,7 +36,7 @@ class ReviewList(generics.ListCreateAPIView):
 
 
 class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = IsOwnerOrReadOnly
+    permission_classes = [IsOwnerOrReadOnly]
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
 

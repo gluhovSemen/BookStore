@@ -6,14 +6,14 @@ from cart.serializers import CartSerializer, CartItemSerializer
 
 class CartList(generics.ListCreateAPIView):
     """Shows all the carts, for admins only"""
-    permission_classes = permissions.IsAdminUser
+    permission_classes = [permissions.IsAdminUser]
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
 
 
 class CartDetail(generics.RetrieveUpdateDestroyAPIView):
     """Shows the cart of the certain User"""
-    permission_classes = permissions.IsAuthenticated
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
 
@@ -28,7 +28,7 @@ class CartDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class CartItemList(generics.ListCreateAPIView):
     """Shows all the CartItems in a cart for a certain user"""
-    permission_classes = permissions.IsAuthenticated
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = CartItemSerializer
 
     def get_queryset(self):
@@ -43,7 +43,7 @@ class CartItemList(generics.ListCreateAPIView):
 
 class CartItemDetail(generics.RetrieveUpdateDestroyAPIView):
     """Shows a specific cartitem of a certain user"""
-    permission_classes = permissions.IsAuthenticated
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = CartItemSerializer
     queryset = CartItem.objects.all()
 
