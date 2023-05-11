@@ -4,16 +4,11 @@ from cart.models import Cart, CartItem
 from cart.serializers import CartSerializer, CartItemSerializer
 
 
-class CartList(generics.ListCreateAPIView):
-    """Shows all the carts, for admins only"""
-    permission_classes = [permissions.IsAdminUser]
-    queryset = Cart.objects.all()
-    serializer_class = CartSerializer
 
 
 class CartDetail(generics.RetrieveUpdateDestroyAPIView):
     """Shows the cart of the certain User"""
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.Is]
     queryset = Cart.objects.all()
     serializer_class = CartSerializer
 
