@@ -3,20 +3,7 @@ from django.shortcuts import get_object_or_404
 from review.models import Review
 from review.serializers import ReviewSerializer
 from book.models import Book
-
-
-class IsOwnerOrReadOnly(permissions.BasePermission):
-    """
-    Custom permission to only allow owners of an object to edit it.
-    """
-
-    def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
-        # Write permissions are only allowed to the owner of the review
-        return obj.customer == request.user
+from utils.permissions import IsOwnerOrReadOnly
 
 
 class ReviewList(generics.ListCreateAPIView):
