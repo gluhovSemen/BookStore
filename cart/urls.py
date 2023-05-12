@@ -1,8 +1,12 @@
 from django.urls import path
-from cart.views import CartItemDetail, CartDetail, CartItemList
+from cart.views import CartItemCreateView, CartItemListAPIView, CartItemDeleteView
 
 urlpatterns = [
-    path('carts/<int:pk>/', CartDetail.as_view(), name='cart_detail'),
-    path('carts/<int:cart_id>/items/', CartItemList.as_view(), name='cart_item_list'),
-    path('carts/<int:cart_id>/items/<int:pk>/', CartItemDetail.as_view(), name='cart_item_detail'),
+    path("carts/", CartItemListAPIView.as_view(), name="cart_detail"),
+    path(
+        "carts/<int:book_id>/delete/",
+        CartItemDeleteView().as_view(),
+        name="cart_item_delete",
+    ),
+    path("carts/items/create/", CartItemCreateView.as_view(), name="cart_item_detail"),
 ]

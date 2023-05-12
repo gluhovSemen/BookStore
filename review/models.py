@@ -5,6 +5,7 @@ from book.models import Book
 
 class Review(models.Model):
     """This model represents a customer's review of a book"""
+
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     rating = models.IntegerField()
