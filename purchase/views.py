@@ -1,12 +1,12 @@
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.db import transaction
 
 from cart.models import Cart
 from purchase.models import Purchase
-from purchase.serializers import PurchaseSerializer
+from purchase.serializers import PurchaseSerializer, PurchaseSerializerShort
 from utils.permissions import IsOwner
 
 
@@ -48,6 +48,15 @@ class CreatePurchaseAndClearCart(APIView):
 
 
 class UserPurchaseListAPIView(ListAPIView):
+    serializer_class = PurchaseSerializerShort
+    permission_classes = [IsOwner]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Purchase.objects.filter(customer=user)
+
+
+class UserPurchaseDitailAPIView(RetrieveAPIView):
     serializer_class = PurchaseSerializer
     permission_classes = [IsOwner]
 
