@@ -1,11 +1,30 @@
-from django.shortcuts import get_object_or_404
+from django.db.models import F
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 
-from cart.models import CartItem, Cart
+from purchase.models import Purchase
 
 
-def create_purchase_empty_cart(self):
-    cart = get_object_or_404(Cart, customer=self.customer)
-    cart_items = CartItem.objects.filter(cart=cart, book=self.book)
-    cart_items.delete()
-    self.book.available_stock -= self.quantity
-    self.book.save()
+def create_purchases_and_clear_cart(cart):
+    purchases = []
+    for cart_item in cart.cartitem_set.all():
+        book = cart_item.book
+        if cart_item.quantity > book.available_stock:
+            raise ValidationError(
+                {"message": f"Not enough stock available for book: {book.title}"}
+            )
+        book.available_stock = F("available_stock") - cart_item.quantity
+        book.save()
+
+        purchase = Purchase(
+            customer=cart.customer,
+            book=book,
+            quantity=cart_item.quantity,
+            price=cart_item.price,
+        )
+        purchases.append(purchase)
+    Purchase.objects.bulk_create(purchases)
+
+    cart.delete_cart_items()
+
+    return Response({"message": "Purchases created and cart cleared"}, status=200)

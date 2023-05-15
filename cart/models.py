@@ -13,6 +13,9 @@ class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
 
+    def delete_cart_items(self, *args, **kwargs):
+        self.cartitem_set.all().delete()
+
 
 class CartItem(models.Model):
     """This model represents an item in the shopping cart"""

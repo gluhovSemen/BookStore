@@ -39,6 +39,7 @@ class CartItemCreateView(CreateAPIView):
     """Creates a CartItem with the given book.id"""
 
     permission_classes = [IsOwner]
+    serializer_class = CartItemSerializerLong
 
     def post(self, request, *args, **kwargs):
         book_id = request.data.get("book_id")
