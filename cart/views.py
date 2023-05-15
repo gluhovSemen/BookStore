@@ -38,27 +38,12 @@ class CartItemDeleteView(DestroyAPIView):
 class CartItemCreateView(CreateAPIView):
     """Creates a CartItem with the given book.id"""
 
-    serializer_class = CartItemSerializerLong
     permission_classes = [IsOwner]
 
     def post(self, request, *args, **kwargs):
         book_id = request.data.get("book_id")
         quantity = request.data.get("quantity")
-
-        # Ensure book_id and quantity are provided
-        if not all([book_id, quantity]):
-            return Response(
-                {"error": "book_id and quantity are required."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            book = Book.objects.get(id=book_id)
-        except Book.DoesNotExist:
-            return Response(
-                {"error": "Invalid book_id."}, status=status.HTTP_400_BAD_REQUEST
-            )
-
+        book = Book.objects.get(id=book_id)
         cart = Cart.objects.get(customer=request.user)
 
         cart_item = CartItem.objects.create(
