@@ -33,4 +33,4 @@ class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
         return get_object_or_404(Review, pk=review_pk, book__pk=book_pk)
 
     def perform_create(self, serializer):
-        serializer.save(customer=self.request.client)
+        serializer.save(customer=self.request.user)

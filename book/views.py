@@ -1,4 +1,3 @@
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics
 from book.models import Book, Author, Publisher
 from book.serializers import BookSerializer, AuthorSerializer, PublisherSerializer

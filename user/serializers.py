@@ -1,35 +1,33 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 
-from django.conf import settings
 
-
-class ClientSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = settings.AUTH_USER_MODEL
+        model = User
         fields = ("username", "password", "email")
 
 
-class ClientLoginSerializer(serializers.ModelSerializer):
+class UserLoginSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = settings.AUTH_USER_MODEL
+        model = User
         fields = ("username", "password")
 
 
-class ClientCreateSerializer(serializers.ModelSerializer):
+class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
-        model = settings.AUTH_USER_MODEL
+        model = User
         fields = ("username", "password", "email", "first_name", "last_name")
 
     def create(self, validated_data):
         password = validated_data.pop("password")
-        client = settings.AUTH_USER_MODEL(**validated_data)
-        client.set_password(password)
-        client.save()
-        return client
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
