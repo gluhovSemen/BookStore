@@ -4,24 +4,26 @@ from rest_framework.generics import CreateAPIView, GenericAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
-from user.serializers import UserCreateSerializer, UserLoginSerializer
+from django.conf import settings
+from user.models import Client
+from user.serializers import ClientCreateSerializer, ClientLoginSerializer
 
 
-class UserRegistration(CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserCreateSerializer
+class ClientRegistration(CreateAPIView):
+    queryset = Client.objects.all()
+    serializer_class = ClientCreateSerializer
 
 
-class UserLogin(GenericAPIView):
+class ClientLogin(GenericAPIView):
     permission_classes = [permissions.AllowAny]
-    serializer_class = UserLoginSerializer
+    serializer_class = ClientLoginSerializer
 
     def post(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
-        user = authenticate(request, username=username, password=password)
-        if user:
-            login(request, user)
+        client = authenticate(request, username=username, password=password)
+        if client:
+            login(request, client)
             return Response({"message": "Login successful"})
         return Response(
             {"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED

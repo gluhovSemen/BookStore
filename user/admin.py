@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.contrib import admin
-from user.models import Profile
+from django.contrib.auth import get_user_model
 
-admin.site.register(Profile)
+client = get_user_model()
+admin.site.register(client)

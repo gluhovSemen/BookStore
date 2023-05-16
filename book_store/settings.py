@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-3c3wo_!qp3%tv=z1lzlz-pzyq!hs5zg9l!)bm1-&wmo4==sy%+
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+AUTH_USER_MODEL = 'user.Client'
 # Application definition
 
 INSTALLED_APPS = [
@@ -35,13 +35,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'drf_yasg',
     'review',
     'book.apps.BookConfig',
     'cart',
     'purchase',
     'user',
-    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -132,7 +132,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 2,
-
+    'DEFAULT_SCHEMA_CLASS': ['rest_framework.schemas.coreapi.AutoSchema'],
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
@@ -147,3 +147,9 @@ REST_FRAMEWORK = {
     ]
 
 }
+
+
+# }
+# SWAGGER_SETTINGS = {
+#     'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_yasg.openapi.AutoSchema',
+# }

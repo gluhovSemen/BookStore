@@ -15,12 +15,12 @@ class CreatePurchase(APIView):
 
     @transaction.atomic
     def post(self, request):
-        user = request.user
+        client = request.user
 
         cart = (
             Cart.objects.select_related("customer")
             .prefetch_related("cartitem_set")
-            .get(customer=user)
+            .get(customer=client)
         )
 
         response = create_purchases_and_clear_cart(cart)
@@ -33,8 +33,8 @@ class UserPurchaseListAPIView(ListAPIView):
     permission_classes = [IsOwner]
 
     def get_queryset(self):
-        user = self.request.user
-        return Purchase.objects.filter(customer=user)
+        client = self.request.user
+        return Purchase.objects.filter(customer=client)
 
 
 class UserPurchaseDitailAPIView(RetrieveAPIView):
@@ -42,5 +42,5 @@ class UserPurchaseDitailAPIView(RetrieveAPIView):
     permission_classes = [IsOwner]
 
     def get_queryset(self):
-        user = self.request.user
-        return Purchase.objects.filter(customer=user)
+        client = self.request.user
+        return Purchase.objects.filter(customer=client)

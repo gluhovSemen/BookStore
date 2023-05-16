@@ -15,8 +15,8 @@ class CartItemListAPIView(generics.ListAPIView):
     serializer_class = CartItemSerializer
 
     def get_queryset(self):
-        user = self.request.user
-        return CartItem.objects.filter(cart__customer=user)
+        client = self.request.user
+        return CartItem.objects.filter(cart__customer=client)
 
 
 class CartItemDeleteView(DestroyAPIView):
@@ -25,8 +25,8 @@ class CartItemDeleteView(DestroyAPIView):
     permission_classes = [IsOwner]
 
     def get_queryset(self):
-        user = self.request.user
-        return CartItem.objects.filter(cart__customer=user)
+        client = self.request.user
+        return CartItem.objects.filter(cart__customer=client)
 
     def get_object(self):
         book_id = self.kwargs["book_id"]
