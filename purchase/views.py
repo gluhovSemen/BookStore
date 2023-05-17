@@ -1,4 +1,5 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db import transaction
 
@@ -16,16 +17,8 @@ class CreatePurchase(APIView):
     @transaction.atomic
     def post(self, request):
         user = request.user
-
-        cart = (
-            Cart.objects.select_related("customer")
-            .prefetch_related("cartitem_set")
-            .get(customer=user)
-        )
-
-        response = create_purchases_and_clear_cart(cart)
-
-        return response
+        purchases = create_purchases_and_clear_cart(user)
+        return Response(PurchaseSerializer(purchases, many=True).data, status=200)
 
 
 class UserPurchaseListAPIView(ListAPIView):
