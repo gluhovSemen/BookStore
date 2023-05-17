@@ -1,7 +1,7 @@
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
 from review.models import Review
-from review.serializers import ReviewSerializer
+from review.serializers import ReviewSerializer, ReviewSerializerLong
 from book.models import Book
 from utils.permissions import IsOwnerOrReadOnly
 
@@ -21,3 +21,14 @@ class ReviewList(generics.ListCreateAPIView):
         book = get_object_or_404(Book, pk=book_pk)
         user = self.request.user
         serializer.save(customer=user, book=book)
+
+
+class ReviewDestroy(generics.DestroyAPIView):
+    permission_classes = [IsOwnerOrReadOnly]
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializerLong
+
+    def get_object(self):
+        book_pk = self.kwargs["book_pk"]
+        review_pk = self.kwargs["review_pk"]
+        return get_object_or_404(Review, pk=review_pk, book__pk=book_pk)
