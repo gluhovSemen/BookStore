@@ -1,7 +1,10 @@
 from datetime import date
 
 import factory
+from django.contrib.auth.models import User
+
 from book.models import Author, Publisher, Book
+from review.models import Review
 
 
 class AuthorFactory(factory.django.DjangoModelFactory):
@@ -39,3 +42,24 @@ class BookFactory(factory.django.DjangoModelFactory):
     language = factory.Faker("language_code")
     available_stock = factory.Faker("pyint", min_value=0, max_value=1000)
     rating = factory.Faker("pyfloat", left_digits=1, right_digits=1, positive=True)
+
+
+class UserFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = User
+
+    username = factory.Sequence(lambda n: f"user{n}")
+    email = factory.LazyAttribute(lambda obj: f"{obj.username}@example.com")
+    password = factory.PostGenerationMethodCall("set_password", "password")
+    is_staff = False
+    is_superuser = False
+
+
+class ReviewFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Review
+
+    customer = factory.SubFactory(UserFactory)
+    book = factory.SubFactory(BookFactory)
+    rating = factory.Faker("pyint", min_value=1, max_value=5)
+    review_text = factory.Faker("paragraph")

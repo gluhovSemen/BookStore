@@ -19,11 +19,12 @@ def test_publisher_list(publisher, api_client):
 @pytest.mark.django_db
 def test_book_list(book, api_client):
     response = api_client.get("/books/books/")
+    assert response.data["count"] == 1
     assert response.status_code == status.HTTP_200_OK
 
 
 @pytest.mark.django_db
 def test_book_detail(book, api_client):
     response = api_client.get("/books/books/2/")
-    assert response.data["title"] == book.title
+    assert response.data['id'] == book.id
     assert response.status_code == status.HTTP_200_OK
