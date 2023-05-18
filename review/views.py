@@ -1,11 +1,10 @@
 from rest_framework import generics, permissions
 from django.shortcuts import get_object_or_404
-from rest_framework.exceptions import PermissionDenied
 
 from review.models import Review
 from review.serializers import ReviewSerializer, ReviewSerializerLong
 from book.models import Book
-from utils.permissions import IsOwnerOrReadOnly, IsOwner
+from utils.permissions import IsOwnerOrReadOnly
 
 
 class ReviewList(generics.ListCreateAPIView):
@@ -22,8 +21,6 @@ class ReviewList(generics.ListCreateAPIView):
         book_pk = self.kwargs["book_pk"]
         book = get_object_or_404(Book, pk=book_pk)
         user = self.request.user
-        # if not user.is_authenticated:
-        #     raise PermissionDenied("Authentication required.")
         serializer.save(customer=user, book=book)
 
 

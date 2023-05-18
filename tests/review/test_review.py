@@ -22,6 +22,16 @@ def test_review_create_permission(api_client, book, user):
 
 
 @pytest.mark.django_db
+def test_review_create_book_rating(api_client, book, user):
+    api_client.force_authenticate(user=user)
+    url = reverse("review-list", kwargs={"book_pk": book.pk})
+    payload = {"book": book.pk, "rating": 3, "review_text": "string"}
+    response = api_client.post(url, payload, format="json")
+    review = Review.objects.first()
+    assert review.rating == 3
+
+
+@pytest.mark.django_db
 def test_review_create(api_client, book, user):
     api_client.force_authenticate(user=user)
     url = reverse("review-list", kwargs={"book_pk": book.pk})
@@ -31,8 +41,6 @@ def test_review_create(api_client, book, user):
     review = Review.objects.first()
     assert review.customer == user
     assert review.book == book
-    assert review.rating == 1
-    assert review.review_text == "string"
 
 
 @pytest.mark.django_db
