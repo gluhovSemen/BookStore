@@ -1,4 +1,4 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.generics import DestroyAPIView, CreateAPIView
 from rest_framework.response import Response
 
@@ -13,7 +13,7 @@ from utils.permissions import IsOwner
 class CartItemListAPIView(generics.ListAPIView):
     """Shows the cart of the certain User"""
 
-    permission_classes = [IsOwner]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
     serializer_class = CartItemSerializer
 
     def get_queryset(self):
@@ -24,7 +24,7 @@ class CartItemListAPIView(generics.ListAPIView):
 class CartItemDeleteView(DestroyAPIView):
     """Deletes the CartItem from a certain User by the book id"""
 
-    permission_classes = [IsOwner]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get_queryset(self):
         user = self.request.user
@@ -40,7 +40,7 @@ class CartItemDeleteView(DestroyAPIView):
 class CartItemCreateView(CreateAPIView):
     """Creates a CartItem with the given book.id"""
 
-    permission_classes = [IsOwner]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
     serializer_class = CartItemCreateSerializer
 
     def create(self, request, *args, **kwargs):

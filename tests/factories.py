@@ -4,6 +4,7 @@ import factory
 from django.contrib.auth.models import User
 
 from book.models import Author, Publisher, Book
+from cart.models import Cart, CartItem
 from review.models import Review
 
 
@@ -63,3 +64,20 @@ class ReviewFactory(factory.django.DjangoModelFactory):
     book = factory.SubFactory(BookFactory)
     rating = factory.Faker("pyint", min_value=1, max_value=5)
     review_text = factory.Faker("paragraph")
+
+
+class CartFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Cart
+
+    customer = factory.Iterator(User.objects.all())
+
+
+class CartItemFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = CartItem
+
+    cart = factory.SubFactory(CartFactory)
+    book = factory.SubFactory(BookFactory)
+    quantity = factory.Faker("random_int", min=1, max=10)
+    price = factory.Faker("pydecimal", left_digits=3, right_digits=2, positive=True)
