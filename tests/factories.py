@@ -70,7 +70,7 @@ class CartFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Cart
 
-    customer = factory.Iterator(User.objects.all())
+    customer = factory.SubFactory(UserFactory)
 
 
 class CartItemFactory(factory.django.DjangoModelFactory):

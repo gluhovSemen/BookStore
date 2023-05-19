@@ -1,3 +1,4 @@
+from rest_framework import permissions
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,7 +11,7 @@ from utils.permissions import IsOwner
 
 
 class CreatePurchase(APIView):
-    permission_classes = [IsOwner]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
     serializer_class = PurchaseSerializer
 
     @transaction.atomic
@@ -22,7 +23,7 @@ class CreatePurchase(APIView):
 
 class UserPurchaseListAPIView(ListAPIView):
     serializer_class = PurchaseSerializerShort
-    permission_classes = [IsOwner]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get_queryset(self):
         user = self.request.user
@@ -30,8 +31,8 @@ class UserPurchaseListAPIView(ListAPIView):
 
 
 class UserPurchaseDitailAPIView(RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
     serializer_class = PurchaseSerializer
-    permission_classes = [IsOwner]
 
     def get_queryset(self):
         user = self.request.user

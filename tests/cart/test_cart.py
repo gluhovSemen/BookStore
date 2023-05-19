@@ -7,6 +7,7 @@ from tests.conftests import *
 
 
 @pytest.mark.django_db
+@pytest.mark.enable_signals
 def test_cart_create_when_user_created(api_client, user):
     api_client.force_authenticate(user=user)
     url = reverse("cart_detail")
@@ -15,6 +16,7 @@ def test_cart_create_when_user_created(api_client, user):
 
 
 @pytest.mark.django_db
+@pytest.mark.enable_signals
 def test_cart_item_delete(api_client, user, book):
     api_client.force_authenticate(user=user)
     url = reverse("cart_item_detail")
@@ -26,6 +28,7 @@ def test_cart_item_delete(api_client, user, book):
 
 
 @pytest.mark.django_db
+@pytest.mark.enable_signals
 def test_cart_item_create(api_client, user, book):
     api_client.force_authenticate(user=user)
     url = reverse("cart_item_detail")
@@ -35,7 +38,18 @@ def test_cart_item_create(api_client, user, book):
 
 
 @pytest.mark.django_db
+@pytest.mark.enable_signals
 def test_cart_permission(api_client, user):
     url = reverse("cart_detail")
     response = api_client.get(url)
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
+def test_cart_factory(cart):
+    assert cart.id == cart.id
+
+
+@pytest.mark.django_db
+def test_cart_item_factory(cart_item):
+    assert cart_item.book == cart_item.book
