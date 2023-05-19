@@ -1,5 +1,5 @@
-import uuid
-
+import pytest
+from rest_framework.test import APIClient
 from django.contrib.auth.models import User
 
 from tests.factories import (
@@ -11,8 +11,7 @@ from tests.factories import (
     CartFactory,
     CartItemFactory,
 )
-import pytest
-from rest_framework.test import APIClient
+
 
 
 # fixtures

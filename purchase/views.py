@@ -3,7 +3,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db import transaction
 
-from cart.models import Cart
 from purchase.models import Purchase
 from purchase.serializers import PurchaseSerializer, PurchaseSerializerShort
 from purchase.services import create_purchases_and_clear_cart

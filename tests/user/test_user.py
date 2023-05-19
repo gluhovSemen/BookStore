@@ -1,4 +1,3 @@
-from rest_framework.reverse import reverse
 from tests.conftests import *
 
 
