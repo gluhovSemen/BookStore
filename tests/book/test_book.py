@@ -25,6 +25,6 @@ def test_book_list(book, api_client):
 
 @pytest.mark.django_db
 def test_book_detail(book, api_client):
-    response = api_client.get("/books/books/2/")
+    response = api_client.get(f"/books/books/{book.id}/")
     assert response.data['id'] == book.id
     assert response.status_code == status.HTTP_200_OK
