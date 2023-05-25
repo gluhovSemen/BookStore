@@ -52,16 +52,16 @@ class GetMostSoldBookByPrice(SalesAPI):
 
 
 class GetSalesByUser(SalesAPI):
-    def __init__(self, user_id, url="/sales/user/"):
+    def __init__(self, url, user_id):
         self.user_id = user_id
-        self.url = url + str(user_id)
+        self.url = url + "/" + str(self.user_id)
 
     def get_url(self):
         return f"{self.base_url}{self.url}"
 
 
 class GetSalesByDay(SalesAPI):
-    def __init__(self, day, url="/sales/date"):
+    def __init__(self, url, day):
         self.day = day
         self.url = url
 
@@ -82,9 +82,9 @@ class GetMostSoldDays(SalesAPI):
 
 
 class GetSoldDaysForBook(SalesAPI):
-    def __init__(self, book_id, url="/sales/book/"):
+    def __init__(self, url, book_id):
         self.book_id = book_id
-        self.url = url + str(book_id) + "/sold-days"
+        self.url = url +"/"+ str(book_id)
 
     def get_url(self):
         return f"{self.base_url}{self.url}"
@@ -97,11 +97,15 @@ class HTTPRequest:
         "/sales/most-sold-book-by-quantity": GetMostSoldBookByQuantity,
         "/sales/most-sold-book-by-price": GetMostSoldBookByPrice,
         "/sales/most-sold-days": GetMostSoldDays,
+        "/sales/user": GetSalesByUser,
+        "/sales/date": GetSalesByDay,
+        "/sales/book/sold-days":GetSoldDaysForBook
+
     }
 
     @classmethod
-    def run(cls, dynamic_value: str, **kwargs):
-        if dynamic_value in cls.MAPPER:
-            request_class = cls.MAPPER[dynamic_value]
-            request_obj = request_class(dynamic_value)
+    def run(cls, url: str, **kwargs):
+        if url in cls.MAPPER:
+            request_class = cls.MAPPER[url]
+            request_obj = request_class(url=url, **kwargs)
             return request_obj.make_request()
