@@ -63,8 +63,10 @@ def test_purchase_create_on_cart_item(api_client, user, book):
     url = reverse("cart_item_detail")
     payload = {"book_id": book.pk, "quantity": 3}
     api_client.post(url, payload, format="json")
+    breakpoint()
     url = reverse("purchase-create")
     response = api_client.post(url)
+    breakpoint()
     assert response.status_code == status.HTTP_200_OK
     purchase = Purchase.objects.first()
     assert purchase.customer == user

@@ -18,6 +18,7 @@ def create_purchases_and_clear_cart(user):
     updates = []
     stock_updates = defaultdict(int)
     purchases = []
+    breakpoint()
     for cart_item in cart.cartitem_set.all():
         book = cart_item.book
         if cart_item.quantity > book.available_stock:

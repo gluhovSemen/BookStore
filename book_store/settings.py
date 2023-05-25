@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'cart',
     'purchase',
     'user',
+    'fastapi_microservice_connection',
     'rest_framework',
 ]
 
