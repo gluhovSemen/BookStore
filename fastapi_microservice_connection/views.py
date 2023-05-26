@@ -1,9 +1,11 @@
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import permissions
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.views import APIView
 
 from fastapi_microservice_connection.serializers import SalesSchemaDisplaySerializer, MostSoldBookSerializer, \
-    MostSoldDaysSerializer
+    MostSoldDaysSerializer, SoldDaysSerializer
 from fastapi_microservice_connection.servises import HTTPRequest
 from utils.permissions import IsOwner
 
@@ -63,9 +65,12 @@ class SalesByDateListAPIView(ListAPIView):
     serializer_class = SalesSchemaDisplaySerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    # @swagger_auto_schema(manual_parameters=[
+    #     openapi.Parameter('day', openapi.IN_QUERY, description='The day to filter sales by', type=openapi.TYPE_STRING),
+    # ])
     def get_queryset(self):
         day = self.request.query_params.get('day')
-        return HTTPRequest.run('/sales/date', day)
+        return HTTPRequest.run('/sales/date', day=day)
 
 
 class MostSoldDaysListAPIView(ListAPIView):
@@ -79,7 +84,7 @@ class MostSoldDaysListAPIView(ListAPIView):
 
 class SoldDaysForBookListAPIView(ListAPIView):
     pagination_class = None
-    serializer_class = str
+    serializer_class = SoldDaysSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):

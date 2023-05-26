@@ -20,7 +20,10 @@ class MostSoldBookSerializer(serializers.Serializer):
 
 
 class SoldDaysSerializer(serializers.Serializer):
-    day = serializers.CharField()
+    sold_days = serializers.ListField(child=serializers.DateField())
+
+    def to_representation(self, instance):
+        return instance
 
 
 class MostSoldDaysSerializer(SoldDaysSerializer):

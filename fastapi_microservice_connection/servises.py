@@ -99,7 +99,7 @@ class HTTPRequest:
         "/sales/most-sold-days": GetMostSoldDays,
         "/sales/user": GetSalesByUser,
         "/sales/date": GetSalesByDay,
-        "/sales/book/sold-days":GetSoldDaysForBook
+        "/sales/book/sold-days": GetSoldDaysForBook
 
     }
 
