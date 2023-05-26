@@ -1,13 +1,19 @@
+import enum
 import os
 from abc import abstractmethod, ABC
 import requests
 from dotenv import load_dotenv
+
+from utils.MICROSERVICE_URL import URL
 
 load_dotenv()
 
 
 class SalesAPI(ABC):
     base_url = os.getenv("URL")
+
+    def __init__(self, url):
+        self.url = url
 
     @abstractmethod
     def get_url(self):
@@ -23,32 +29,24 @@ class SalesAPI(ABC):
 
 
 class GetAllSales(SalesAPI):
-    def __init__(self, url):
-        self.url = url
 
     def get_url(self):
         return f"{self.base_url}{self.url}"
 
 
 class GetMostExpensiveSale(SalesAPI):
-    def __init__(self, url):
-        self.url = url
 
     def get_url(self):
         return f"{self.base_url}{self.url}"
 
 
 class GetMostSoldBookByQuantity(SalesAPI):
-    def __init__(self, url):
-        self.url = url
 
     def get_url(self):
         return f"{self.base_url}{self.url}"
 
 
 class GetMostSoldBookByPrice(SalesAPI):
-    def __init__(self, url):
-        self.url = url
 
     def get_url(self):
         return f"{self.base_url}{self.url}"
@@ -77,9 +75,6 @@ class GetSalesByDay(SalesAPI):
 
 
 class GetMostSoldDays(SalesAPI):
-    def __init__(self, url):
-        self.url = url
-
     def get_url(self):
         return f"{self.base_url}{self.url}"
 
@@ -95,18 +90,18 @@ class GetSoldDaysForBook(SalesAPI):
 
 class HTTPRequest:
     MAPPER = {
-        "/sales": GetAllSales,
-        "/sales/most-expensive": GetMostExpensiveSale,
-        "/sales/most-sold-book-by-quantity": GetMostSoldBookByQuantity,
-        "/sales/most-sold-book-by-price": GetMostSoldBookByPrice,
-        "/sales/most-sold-days": GetMostSoldDays,
-        "/sales/user": GetSalesByUser,
-        "/sales/date": GetSalesByDay,
-        "/sales/book/sold-days": GetSoldDaysForBook,
+        URL.ALL_SALES.value: GetAllSales,
+        URL.MOST_EXPENSIVE_SALE.value: GetMostExpensiveSale,
+        URL.MOST_SOLD_BOOK_BY_QUANTITY.value: GetMostSoldBookByQuantity,
+        URL.MOST_SOLD_BOOK_BY_PRICE.value: GetMostSoldBookByPrice,
+        URL.MOST_SOLD_DAYS.value: GetMostSoldDays,
+        URL.SALES_BY_USER.value: GetSalesByUser,
+        URL.SALES_BY_DATE.value: GetSalesByDay,
+        URL.BOOK_SOLD_BY_DAY.value: GetSoldDaysForBook,
     }
 
     @classmethod
-    def run(cls, url: str, **kwargs):
+    def run(cls, url: enum, **kwargs):
         if url in cls.MAPPER:
             request_class = cls.MAPPER[url]
             request_obj = request_class(url=url, **kwargs)

@@ -11,6 +11,7 @@ from fastapi_microservice_connection.serializers import (
     SoldDaysSerializer,
 )
 from fastapi_microservice_connection.servises import HTTPRequest
+from utils.MICROSERVICE_URL import URL
 
 
 class BaseSalesAPIView(APIView):
@@ -18,35 +19,32 @@ class BaseSalesAPIView(APIView):
     serializer_class = SalesSchemaDisplaySerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    def run_http_request(self, url, **kwargs):
+        return HTTPRequest.run(url, **kwargs)
+
 
 class AllSalesListAPIView(BaseSalesAPIView, ListAPIView):
-    def get_queryset(self):
-        return HTTPRequest.run("/sales")
+    queryset = BaseSalesAPIView().run_http_request(URL.ALL_SALES.value)
 
 
 class MostExpensiveSaleAPIView(BaseSalesAPIView, RetrieveAPIView):
-    def get_object(self):
-        return HTTPRequest.run("/sales/most-expensive")
+    queryset = BaseSalesAPIView().run_http_request(URL.MOST_EXPENSIVE_SALE.value)
 
 
 class MostSoldBookByQuantityAPIView(BaseSalesAPIView, RetrieveAPIView):
     serializer_class = MostSoldBookSerializer
-
-    def get_object(self):
-        return HTTPRequest.run("/sales/most-sold-book-by-quantity")
+    queryset = BaseSalesAPIView().run_http_request(URL.MOST_SOLD_BOOK_BY_QUANTITY.value)
 
 
 class MostSoldBookByPriceAPIView(BaseSalesAPIView, RetrieveAPIView):
     serializer_class = MostSoldBookSerializer
-
-    def get_object(self):
-        return HTTPRequest.run("/sales/most-sold-book-by-price")
+    queryset = BaseSalesAPIView().run_http_request(URL.MOST_SOLD_BOOK_BY_PRICE.value)
 
 
 class SalesByUserListAPIView(BaseSalesAPIView, ListAPIView):
     def get_queryset(self):
         user_id = self.kwargs["user_id"]
-        return HTTPRequest.run("/sales/user", user_id=user_id)
+        return BaseSalesAPIView().run_http_request(URL.SALES_BY_USER.value, user_id=user_id)
 
 
 class SalesByDateListAPIView(BaseSalesAPIView, ListAPIView):
@@ -55,14 +53,12 @@ class SalesByDateListAPIView(BaseSalesAPIView, ListAPIView):
     # ])
     def get_queryset(self):
         day = self.request.query_params.get("day")
-        return HTTPRequest.run("/sales/date", day=day)
+        return BaseSalesAPIView().run_http_request(URL.SALES_BY_DATE.value, day=day)
 
 
 class MostSoldDaysListAPIView(BaseSalesAPIView, ListAPIView):
     serializer_class = MostSoldDaysSerializer
-
-    def get_queryset(self):
-        return HTTPRequest.run("/sales/most-sold-days")
+    queryset = BaseSalesAPIView().run_http_request(URL.MOST_SOLD_DAYS.value)
 
 
 class SoldDaysForBookListAPIView(BaseSalesAPIView, ListAPIView):
@@ -70,4 +66,4 @@ class SoldDaysForBookListAPIView(BaseSalesAPIView, ListAPIView):
 
     def get_queryset(self):
         book_id = self.kwargs["book_id"]
-        return HTTPRequest.run("/sales/book/sold-days", book_id=book_id)
+        return BaseSalesAPIView().run_http_request(URL.BOOK_SOLD_BY_DAY.value, book_id=book_id)
