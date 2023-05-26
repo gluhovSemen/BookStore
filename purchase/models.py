@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from book.models import Book
+from purchase.celery import send_purchase_data_to_api
 
 
 class Purchase(models.Model):
@@ -13,12 +14,17 @@ class Purchase(models.Model):
     price = models.DecimalField(max_digits=7, decimal_places=2)
     purchased_date = models.DateTimeField(auto_now_add=True)
 
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #     # Remove the purchased items from the cart
-    #     cart = get_object_or_404(Cart, customer=self.customer)
-    #     cart_items = CartItem.objects.filter(cart=cart, book=self.book)
-    #     cart_items.delete()
-    #     # Reduce the available stock of the book
-    #     self.book.available_stock -= self.quantity
-    #     self.book.save()
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        payload = [
+            {
+                "book_id": self.book.id,
+                "user_id": self.customer.id,
+                "book_title": self.book.title,
+                "author": self.book.author,
+                "purchase_price": float(self.price),
+                "purchase_quantity": self.quantity,
+            }
+        ]
+
+        send_purchase_data_to_api.delay(payload)
