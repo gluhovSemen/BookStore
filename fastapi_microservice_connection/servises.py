@@ -1,10 +1,13 @@
+import os
 from abc import abstractmethod, ABC
-
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 class SalesAPI(ABC):
-    base_url = "http://127.0.0.1:8001/api"  # Replace with your base URL
+    base_url = os.getenv("URL")
 
     @abstractmethod
     def get_url(self):
@@ -84,7 +87,7 @@ class GetMostSoldDays(SalesAPI):
 class GetSoldDaysForBook(SalesAPI):
     def __init__(self, url, book_id):
         self.book_id = book_id
-        self.url = url +"/"+ str(book_id)
+        self.url = url + "/" + str(book_id)
 
     def get_url(self):
         return f"{self.base_url}{self.url}"
@@ -99,8 +102,7 @@ class HTTPRequest:
         "/sales/most-sold-days": GetMostSoldDays,
         "/sales/user": GetSalesByUser,
         "/sales/date": GetSalesByDay,
-        "/sales/book/sold-days": GetSoldDaysForBook
-
+        "/sales/book/sold-days": GetSoldDaysForBook,
     }
 
     @classmethod
