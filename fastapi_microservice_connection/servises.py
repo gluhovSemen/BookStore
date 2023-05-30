@@ -1,91 +1,64 @@
 import enum
 import os
-from abc import abstractmethod, ABC
 import requests
 from dotenv import load_dotenv
 
-from utils.MICROSERVICE_URL import URL
+from utils.microsevice_url import URL
 
 load_dotenv()
 
 
-class SalesAPI(ABC):
-    base_url = os.getenv("URL")
+class SalesAPI:
+    BASE_URL = os.getenv("URL")
 
-    def __init__(self, url):
-        self.url = url
+    @staticmethod
+    def url_parce(url, **kwargs):
+        url = SalesAPI.BASE_URL + url
+        path_params = kwargs.get("path_params", {})
+        query_params = kwargs.get("query_params", {})
+        if path_params:
+            url += "/" + str(sum(path_params.values()))
+        if query_params:
+            url += "?day=" + query_params["day"]
+        return url
 
-    @abstractmethod
-    def get_url(self):
-        pass
-
-    def make_request(self, params=None):
-        url = self.get_url()
-        response = requests.get(url, params=params)
-        if response.status_code == 200:
-            return response.json()
-        else:
-            return None
+    @classmethod
+    def run(cls, url, **kwargs):
+        url_full = cls.url_parce(url, **kwargs)
+        response = requests.get(url_full)
+        return response.json()
 
 
 class GetAllSales(SalesAPI):
-
-    def get_url(self):
-        return f"{self.base_url}{self.url}"
+    pass
 
 
 class GetMostExpensiveSale(SalesAPI):
-
-    def get_url(self):
-        return f"{self.base_url}{self.url}"
+    pass
 
 
 class GetMostSoldBookByQuantity(SalesAPI):
-
-    def get_url(self):
-        return f"{self.base_url}{self.url}"
+    pass
 
 
 class GetMostSoldBookByPrice(SalesAPI):
-
-    def get_url(self):
-        return f"{self.base_url}{self.url}"
+    pass
 
 
 class GetSalesByUser(SalesAPI):
-    def __init__(self, url, user_id):
-        self.user_id = user_id
-        self.url = url + "/" + str(self.user_id)
-
-    def get_url(self):
-        return f"{self.base_url}{self.url}"
+    pass
 
 
 class GetSalesByDay(SalesAPI):
-    def __init__(self, url, day):
-        self.day = day
-        self.url = url
-
-    def get_url(self):
-        return f"{self.base_url}{self.url}"
-
-    def make_request(self):
-        params = {"day": self.day}
-        return super().make_request(params)
+    pass
 
 
 class GetMostSoldDays(SalesAPI):
-    def get_url(self):
-        return f"{self.base_url}{self.url}"
+    pass
 
 
 class GetSoldDaysForBook(SalesAPI):
-    def __init__(self, url, book_id):
-        self.book_id = book_id
-        self.url = url + "/" + str(book_id)
-
-    def get_url(self):
-        return f"{self.base_url}{self.url}"
+    pass
 
 
 class HTTPRequest:
@@ -102,7 +75,4 @@ class HTTPRequest:
 
     @classmethod
     def run(cls, url: enum, **kwargs):
-        if url in cls.MAPPER:
-            request_class = cls.MAPPER[url]
-            request_obj = request_class(url=url, **kwargs)
-            return request_obj.make_request()
+        return cls.MAPPER[url]().run(url=url, **kwargs)

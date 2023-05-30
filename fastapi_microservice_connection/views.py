@@ -1,9 +1,8 @@
-# from drf_yasg import openapi
-# from drf_yasg.utils import swagger_auto_schema
-from rest_framework import permissions
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from typing import Optional, Tuple
+from rest_framework import serializers
+from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.views import APIView
-
 from fastapi_microservice_connection.serializers import (
     SalesSchemaDisplaySerializer,
     MostSoldBookSerializer,
@@ -11,59 +10,87 @@ from fastapi_microservice_connection.serializers import (
     SoldDaysSerializer,
 )
 from fastapi_microservice_connection.servises import HTTPRequest
-from utils.MICROSERVICE_URL import URL
+from utils.microsevice_url import URL
 
 
 class BaseSalesAPIView(APIView):
+    MICROSERVICE_URL: URL
+    serializer_class: serializers.Serializer
     pagination_class = None
+
+    query_params_fields: Optional[Tuple[str]] = None
+    path_params_fields: Optional[Tuple[str]] = None
+
+    def get_params(self, request, **kwargs):
+        path_params = {}
+
+        if self.path_params_fields:
+            for field in self.path_params_fields:
+                if field in kwargs:
+                    path_params[field] = kwargs[field]
+
+        query_params = {}
+
+        if self.query_params_fields:
+            for field in self.query_params_fields:
+                if field in request.GET:
+                    query_params[field] = request.GET[field]
+
+        return path_params, query_params
+
+    def get(self, request, *args, **kwargs):
+        path_params, query_params = self.get_params(request, **kwargs)
+        response_data = HTTPRequest().run(
+            url=self.MICROSERVICE_URL,
+            path_params=path_params,
+            query_params=query_params,
+        )
+
+        serializer = self.serializer_class(data=response_data, many=True)
+        serializer.is_valid(raise_exception=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class AllSalesListAPIView(BaseSalesAPIView):
     serializer_class = SalesSchemaDisplaySerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-    def run_http_request(self, url, **kwargs):
-        return HTTPRequest.run(url, **kwargs)
+    MICROSERVICE_URL = URL.ALL_SALES.value
 
 
-class AllSalesListAPIView(BaseSalesAPIView, ListAPIView):
-    queryset = BaseSalesAPIView().run_http_request(URL.ALL_SALES.value)
+class MostExpensiveSaleAPIView(BaseSalesAPIView):
+    serializer_class = SalesSchemaDisplaySerializer
+    MICROSERVICE_URL = URL.MOST_EXPENSIVE_SALE.value
 
 
-class MostExpensiveSaleAPIView(BaseSalesAPIView, RetrieveAPIView):
-    queryset = BaseSalesAPIView().run_http_request(URL.MOST_EXPENSIVE_SALE.value)
-
-
-class MostSoldBookByQuantityAPIView(BaseSalesAPIView, RetrieveAPIView):
+class MostSoldBookByQuantityAPIView(BaseSalesAPIView):
     serializer_class = MostSoldBookSerializer
-    queryset = BaseSalesAPIView().run_http_request(URL.MOST_SOLD_BOOK_BY_QUANTITY.value)
+    MICROSERVICE_URL = URL.MOST_SOLD_BOOK_BY_QUANTITY.value
 
 
-class MostSoldBookByPriceAPIView(BaseSalesAPIView, RetrieveAPIView):
+class MostSoldBookByPriceAPIView(BaseSalesAPIView):
     serializer_class = MostSoldBookSerializer
-    queryset = BaseSalesAPIView().run_http_request(URL.MOST_SOLD_BOOK_BY_PRICE.value)
+    MICROSERVICE_URL = URL.MOST_SOLD_BOOK_BY_PRICE.value
 
 
-class SalesByUserListAPIView(BaseSalesAPIView, ListAPIView):
-    def get_queryset(self):
-        user_id = self.kwargs["user_id"]
-        return BaseSalesAPIView().run_http_request(URL.SALES_BY_USER.value, user_id=user_id)
+#
+class SalesByUserListAPIView(BaseSalesAPIView):
+    serializer_class = SalesSchemaDisplaySerializer
+    path_params_fields = ("user_id",)
+    MICROSERVICE_URL = URL.SALES_BY_USER.value
 
 
-class SalesByDateListAPIView(BaseSalesAPIView, ListAPIView):
-    # @swagger_auto_schema(manual_parameters=[
-    #     openapi.Parameter('day', openapi.IN_QUERY, description='The day to filter sales by', type=openapi.TYPE_STRING),
-    # ])
-    def get_queryset(self):
-        day = self.request.query_params.get("day")
-        return BaseSalesAPIView().run_http_request(URL.SALES_BY_DATE.value, day=day)
+#
+class SalesByDateListAPIView(BaseSalesAPIView):
+    serializer_class = SalesSchemaDisplaySerializer
+    query_params_fields = ("day",)
+    MICROSERVICE_URL = URL.SALES_BY_DATE.value
 
 
-class MostSoldDaysListAPIView(BaseSalesAPIView, ListAPIView):
+class MostSoldDaysListAPIView(BaseSalesAPIView):
     serializer_class = MostSoldDaysSerializer
-    queryset = BaseSalesAPIView().run_http_request(URL.MOST_SOLD_DAYS.value)
+    MICROSERVICE_URL = URL.MOST_SOLD_DAYS.value
 
 
-class SoldDaysForBookListAPIView(BaseSalesAPIView, ListAPIView):
+class SoldDaysForBookListAPIView(BaseSalesAPIView):
     serializer_class = SoldDaysSerializer
-
-    def get_queryset(self):
-        book_id = self.kwargs["book_id"]
-        return BaseSalesAPIView().run_http_request(URL.BOOK_SOLD_BY_DAY.value, book_id=book_id)
+    path_params_fields = ("book_id",)
+    MICROSERVICE_URL = URL.BOOK_SOLD_BY_DAY.value

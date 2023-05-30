@@ -4,9 +4,9 @@ from celery import Celery, shared_task
 # Create a Celery instance
 from rest_framework import status
 
-app = Celery("celery", broker="pyamqp://guest@localhost//")
-
-app.autodiscover_tasks()
+# app = Celery("celery", broker="pyamqp://guest@localhost//")
+#
+# app.autodiscover_tasks()
 
 
 def send_purchase_data_to_api(purchase_data):
