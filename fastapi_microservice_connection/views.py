@@ -45,6 +45,8 @@ class BaseSalesAPIView(APIView):
             path_params=path_params,
             query_params=query_params,
         )
+        if isinstance(response_data, dict):
+            response_data = [response_data]
 
         serializer = self.serializer_class(data=response_data, many=True)
         serializer.is_valid(raise_exception=True)
@@ -71,14 +73,12 @@ class MostSoldBookByPriceAPIView(BaseSalesAPIView):
     MICROSERVICE_URL = URL.MOST_SOLD_BOOK_BY_PRICE.value
 
 
-#
 class SalesByUserListAPIView(BaseSalesAPIView):
     serializer_class = SalesSchemaDisplaySerializer
     path_params_fields = ("user_id",)
     MICROSERVICE_URL = URL.SALES_BY_USER.value
 
 
-#
 class SalesByDateListAPIView(BaseSalesAPIView):
     serializer_class = SalesSchemaDisplaySerializer
     query_params_fields = ("day",)

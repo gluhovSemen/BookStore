@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 from book.models import Book
-from purchase.celery import send_purchase_data_to_api
 
 
 class Purchase(models.Model):

@@ -8,5 +8,5 @@ class URL(enum.Enum):
     MOST_SOLD_BOOK_BY_PRICE = "/sales/most-sold-book-by-price"
     MOST_SOLD_DAYS = "/sales/most-sold-days"
     SALES_BY_USER = "/sales/user"
-    SALES_BY_DATE = "/sales/date"
+    SALES_BY_DATE = "/sales/date?day="
     BOOK_SOLD_BY_DAY = "/sales/book/sold-days"

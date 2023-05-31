@@ -17,9 +17,11 @@ class SalesAPI:
         path_params = kwargs.get("path_params", {})
         query_params = kwargs.get("query_params", {})
         if path_params:
-            url += "/" + str(sum(path_params.values()))
+            for params in path_params.values():
+                url += "/" + str(params)
         if query_params:
-            url += "?day=" + query_params["day"]
+            for params in query_params.values():
+                url += str(params)
         return url
 
     @classmethod
