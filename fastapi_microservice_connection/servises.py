@@ -12,7 +12,7 @@ class SalesAPI:
     BASE_URL = os.getenv("URL")
 
     @staticmethod
-    def url_parce(url, **kwargs):
+    def url_parse(url, **kwargs):
         url = SalesAPI.BASE_URL + url
         path_params = kwargs.get("path_params", {})
         query_params = kwargs.get("query_params", {})
@@ -26,7 +26,7 @@ class SalesAPI:
 
     @classmethod
     def run(cls, url, **kwargs):
-        url_full = cls.url_parce(url, **kwargs)
+        url_full = cls.url_parse(url, **kwargs)
         response = requests.get(url_full)
         return response.json()
 
